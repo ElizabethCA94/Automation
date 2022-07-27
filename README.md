@@ -1,4 +1,4 @@
-# Run project on Windows:
+# Run project on Windows OS
 
 remember start VS code with admin privileges
 
@@ -23,5 +23,9 @@ module.exports = defineConfig({
   chromeWebSecurity: false,
 });
 ```
+
+## Git Config
+
+1. on git bash use `git branch --unset-upstream` to sync online
 
 
