@@ -1,0 +1,25 @@
+{
+  "name": "automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElizabethCA94/Automation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ElizabethCA94/Automation/issues"
+  },
+  "homepage": "https://github.com/ElizabethCA94/Automation#readme",
+  "devDependencies": {
+    "cypress": "^10.3.1",
+    "eslint": "^8.20.0",
+    "eslint-plugin-cypress": "^2.12.1"
+  }
+}
