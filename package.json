@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ElizabethCA94/Automation#readme",
   "devDependencies": {
+    "@testing-library/cypress": "^8.0.3",
     "cypress": "^10.3.1",
     "eslint": "^8.20.0",
     "eslint-plugin-cypress": "^2.12.1"
