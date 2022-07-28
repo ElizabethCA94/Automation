@@ -7,9 +7,7 @@ describe('members portal', () => {
     cy.intercept('https://ns-booking-dev.newshore.es/en-us/members/profile/')
       .as('profilePageLoad')
 
-    cy.get('.main-header_nav-secondary_list').then(() => {
-      cy.get('.auth').click()
-    })
+    cy.findByText('Sign in').click()
 
     cy.get('.auth-popover_login').then(() => {
       cy.get('#emailLoginInput')
