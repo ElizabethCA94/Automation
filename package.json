@@ -19,9 +19,9 @@
   "homepage": "https://github.com/ElizabethCA94/Automation#readme",
   "devDependencies": {
     "@testing-library/cypress": "^8.0.3",
-    "cypress": "^10.3.1",
-    "dayjs": "^1.11.4",
-    "eslint": "^8.20.0",
+    "cypress": "^10.4.0",
+    "dayjs": "^1.11.5",
+    "eslint": "^8.22.0",
     "eslint-plugin-chai-friendly": "^0.7.2",
     "eslint-plugin-cypress": "^2.12.1"
   }
