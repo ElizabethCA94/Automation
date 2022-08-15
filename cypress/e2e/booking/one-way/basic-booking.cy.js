@@ -32,11 +32,11 @@ describe('one way basic booking', () => {
     cy.findByText('Mombasa').click()
     cy.findByText('Departure').click()
   
-    const dateIn2Days = dayjs()
-      .add(2, 'days')
+    const dateIn3Days = dayjs()
+      .add(3, 'days')
       .format('D-M-YYYY')
   
-    cy.get(`[aria-label="${dateIn2Days}"]`).click()
+    cy.get(`[aria-label="${dateIn3Days}"]`).click()
   
     cy.findByText('Confirm').click()
     cy.get('#searchButton').click()
@@ -49,6 +49,44 @@ describe('one way basic booking', () => {
     cy.get('.summary_total_list').within(() => {
       cy.findAllByText('Continue').click()
     })
+
+    cy.get('input[id^="IdFirstName"]').click().type('Mario')
+
+    cy.get('input[id^="IdLastName"]').click().type('Rios')
+
+    cy.get('[id^=dateDay_IdDateBirth]').click()
+    cy.get('[aria-labelledby^="labelId_dateDay_IdDateBirth"] li').first().click()
+
+    cy.get('[id^=dateMonth_IdDateBirth]').click()
+    cy.get('[aria-labelledby^="labelId_dateMonth_IdDateBirth"] li').first().click()
+
+    cy.get('[id^=dateYear_IdDateBirth]').click()
+    cy.get('[aria-labelledby^="labelId_dateYear_IdDateBirth"] li').eq(20).click()
+
+    cy.get('button[id^=IdDocNationality]').click()
+    cy.get('ul[aria-labelledby^="labelId_IdDocNationality"] li').first().click()
+
+    cy.get('button[id^=IdDocType]').click()
+    cy.get('ul[aria-labelledby^="labelId_IdDocType"] li').within(() => {
+      cy.findAllByText('All Other Passports').click()
+    })
+
+    cy.get('button[id^=IdDocCountry]').click()
+    cy.get('ul[aria-labelledby^="labelId_IdDocCountry"] li').first().click()
+
+    cy.get('button[id^=dateDay_IdDocExpDate]').click()
+    cy.get('ul[aria-labelledby^="labelId_dateDay_IdDocExpDate"] li').first().click()
+
+    cy.get('input[id^="IdDocNum"]').click().type('123456')
+  
+    cy.get('input[id^="checkbox-2"]').click()
+
+    cy.get('input[id^="phone_phoneNumberInput"]').click().type('3819201220')
+
+    cy.get('input[id^="email"]').click().type('e@e.com')
+    cy.get('input[id^="streetAddress"]').click().type('Street 1')
+    cy.get('input[id^="city"]').click().type('Nairobi')
+
   })
 })
 
