@@ -1,4 +1,19 @@
-# Run project on Windows OS
+# Newshore automation tests E2E
+
+Follow the next steps to setup the enviroment config:
+
+## 1. Install requirements
+
+make sure yo have node version @16 LTS (Long time support). 
+[download here](https://nodejs.org/es/download/)
+
+**Important:** Disable VPN to allow npm install
+
+## 2. Install all dependencies npm
+
+`npm install`
+
+## 3. Run project on Windows OS
 
 remember start VS code with admin privileges
 
