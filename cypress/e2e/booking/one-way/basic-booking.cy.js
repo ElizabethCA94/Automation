@@ -16,6 +16,7 @@ describe('one way basic booking', () => {
   })
 
   it('search journey eldoret to mombasa, in next to 2 days, 1 adult, basic economy', () => {
+    // home page
     cy.get("body").then(($body) => {
       removeRecentSearches($body)
     })
@@ -41,6 +42,7 @@ describe('one way basic booking', () => {
     cy.findByText('Confirm').click()
     cy.get('#searchButton').click()
   
+    // selected flight
     cy.findByText('From').click()
     cy.findByText('BASIC ECONOMY').click()
 
@@ -50,6 +52,7 @@ describe('one way basic booking', () => {
       cy.findAllByText('Continue').click()
     })
 
+    // passengers page
     cy.get('input[id^="IdFirstName"]').click().type('Mario')
 
     cy.get('input[id^="IdLastName"]').click().type('Rios')
@@ -77,6 +80,18 @@ describe('one way basic booking', () => {
     cy.get('button[id^=dateDay_IdDocExpDate]').click()
     cy.get('ul[aria-labelledby^="labelId_dateDay_IdDocExpDate"] li').first().click()
 
+    cy.get('button[id^=dateMonth_IdDocExpDate]').click()
+    cy.get('ul[aria-labelledby^="labelId_dateMonth_IdDocExpDate"] li').first().click()
+
+    cy.get('button[id^=dateYear_IdDocExpDate]').click()
+    cy.get('ul[aria-labelledby^="labelId_dateYear_IdDocExpDate"] li').eq(4).click()
+
+    cy.get('button[id^=phone_prefixPhoneInput').click()
+    cy.get('ul[aria-labelledby^="labelId_phone_prefixPhoneInput"] li').first().click()
+
+    cy.get('button[id^=countrySelect').click()
+    cy.get('ul[aria-labelledby^="labelId_countrySelect"] li').first().click()
+
     cy.get('input[id^="IdDocNum"]').click().type('123456')
   
     cy.get('input[id^="checkbox-2"]').click()
@@ -87,6 +102,26 @@ describe('one way basic booking', () => {
     cy.get('input[id^="streetAddress"]').click().type('Street 1')
     cy.get('input[id^="city"]').click().type('Nairobi')
 
+    cy.intercept('GET', '**/booking/services').as('servicesPage')
+
+    cy.get('.summary_total_list').within(() => {
+      cy.findAllByText('Continue').click()
+    })
+
+    cy.wait('@servicesPage')
+
+    // services page
+    cy.get('.summary_total_list').within(() => {
+      cy.findAllByText('Continue').click()
+    })
+
+    
+
+    // seatmap page
+    cy.get('.combined_summary_bar').within(() => {
+      cy.findAllByText('Continue').click()
+    })
+    
   })
 })
 
