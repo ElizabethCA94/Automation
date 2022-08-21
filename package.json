@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/ElizabethCA94/Automation#readme",
   "devDependencies": {
+    "@antfu/eslint-config": "^0.26.1",
+    "@faker-js/faker": "^7.4.0",
     "@testing-library/cypress": "^8.0.3",
     "cypress": "^10.4.0",
     "dayjs": "^1.11.5",

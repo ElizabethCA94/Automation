@@ -1,4 +1,5 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs'
+import { faker } from '@faker-js/faker'
 
 function removeRecentSearches($body) {
   if ($body.html().includes('recent-search_list')) {
@@ -12,18 +13,18 @@ function removeRecentSearches($body) {
 
 describe('one way basic booking', () => {
   before(() => {
-    cy.visit('https://ns-booking-dev2.newshore.es/en-US/')
+    cy.visit('https://ns-booking-dev4.newshore.es/en-US/')
   })
 
   it('search journey eldoret to mombasa, in next to 2 days, 1 adult, basic economy', () => {
     // home page
-    cy.get("body").then(($body) => {
+    cy.get('body').then(($body) => {
       removeRecentSearches($body)
     })
 
     cy.findByText('One way').click()
     cy.get('#originDiv').within(() => {
-      cy.get('#originBtn').click({ force: true})
+      cy.get('#originBtn').click({ force: true })
       cy.get('input').type('Kenya')
     })
     cy.get('#departureStationsListId').within(() => {
@@ -32,16 +33,16 @@ describe('one way basic booking', () => {
     cy.findByPlaceholderText('Destination').click().type('Mombasa')
     cy.findByText('Mombasa').click()
     cy.findByText('Departure').click()
-  
+
     const dateIn3Days = dayjs()
       .add(3, 'days')
       .format('D-M-YYYY')
-  
+
     cy.get(`[aria-label="${dateIn3Days}"]`).click()
-  
+
     cy.findByText('Confirm').click()
     cy.get('#searchButton').click()
-  
+
     // selected flight
     cy.findByText('From').click()
     cy.findByText('BASIC ECONOMY').click()
@@ -53,9 +54,12 @@ describe('one way basic booking', () => {
     })
 
     // passengers page
-    cy.get('input[id^="IdFirstName"]').click().type('Mario')
+    const firstName = faker.name.firstName()
+    const lastName = faker.name.lastName()
+    const idDocument = faker.random.numeric(6)
+    cy.get('input[id^="IdFirstName"]').click().type(firstName)
 
-    cy.get('input[id^="IdLastName"]').click().type('Rios')
+    cy.get('input[id^="IdLastName"]').click().type(lastName)
 
     cy.get('[id^=dateDay_IdDateBirth]').click()
     cy.get('[aria-labelledby^="labelId_dateDay_IdDateBirth"] li').first().click()
@@ -80,20 +84,20 @@ describe('one way basic booking', () => {
     cy.get('button[id^=dateDay_IdDocExpDate]').click()
     cy.get('ul[aria-labelledby^="labelId_dateDay_IdDocExpDate"] li').first().click()
 
-    cy.get('button[id^=dateMonth_IdDocExpDate]').click()
+    cy.get('button[id^="dateMonth_IdDocExpDate"]').click()
     cy.get('ul[aria-labelledby^="labelId_dateMonth_IdDocExpDate"] li').first().click()
 
-    cy.get('button[id^=dateYear_IdDocExpDate]').click()
+    cy.get('button[id^="dateYear_IdDocExpDate"]').click()
     cy.get('ul[aria-labelledby^="labelId_dateYear_IdDocExpDate"] li').eq(4).click()
 
-    cy.get('button[id^=phone_prefixPhoneInput').click()
+    cy.get('button[id^="phone_prefixPhoneInput"]').click()
     cy.get('ul[aria-labelledby^="labelId_phone_prefixPhoneInput"] li').first().click()
 
-    cy.get('button[id^=countrySelect').click()
+    cy.get('button[id^="countrySelect"]').click()
     cy.get('ul[aria-labelledby^="labelId_countrySelect"] li').first().click()
 
-    cy.get('input[id^="IdDocNum"]').click().type('123456')
-  
+    cy.get('input[id^="IdDocNum"]').click().type(idDocument)
+
     cy.get('input[id^="checkbox-2"]').click()
 
     cy.get('input[id^="phone_phoneNumberInput"]').click().type('3819201220')
@@ -115,13 +119,35 @@ describe('one way basic booking', () => {
       cy.findAllByText('Continue').click()
     })
 
-    
-
     // seatmap page
-    cy.get('.combined_summary_bar').within(() => {
-      cy.findAllByText('Continue').click()
+    cy.get('.amount-summary_container').within(() => {
+      cy.findAllByText('Skip step').click()
     })
-    
+
+    cy.get('.modal-footer').within(() => {
+      cy.findAllByText('Agree').click()
+    })
+
+    // payment page
+    cy.get('input[id="Holder"]').click().type('Test')
+    cy.get('input[id="Data"]').click().type('3700 0000 0000 002')
+    cy.get('button[id="expirationMonth_ExpirationDate"]').click()
+    cy.get('ul[aria-labelledby="labelId_expirationMonth_ExpirationDate"]').within(() => {
+      cy.findAllByText('3').click()
+    })
+    cy.get('button[id="expirationYear_ExpirationDate"]').click()
+    cy.get('ul[aria-labelledby="labelId_expirationYear_ExpirationDate"]').within(() => {
+      cy.findAllByText('30').click()
+    })
+    cy.get('input[id="Cvv"]').click().type('7373')
+
+    cy.intercept('GET', '**/itinerary').as('itineraryPage')
+
+    cy.get('.page_buttons').within(() => {
+      cy.findAllByText('Pay').click()
+    })
+
+    cy.wait('@itineraryPage')
   })
 })
 

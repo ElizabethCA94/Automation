@@ -1,2 +1,5 @@
+- [ ] assert in itinarary page (name, origin, destination, fare, pax info)
+- [ ] create a booking on hold
+- [ ] booking MC and RT, create a function with flight type and pax count and types 
 - [ ] in members portal login test, remove previous login to prevent manual logout
-- [ ] allows cypress `cy.findByText('sign in')` helper get filter
+- [x] allows cypress `cy.findByText('sign in')` helper get filter

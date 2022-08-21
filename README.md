@@ -36,7 +36,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 ```js
 module.exports = defineConfig({
   chromeWebSecurity: false,
-});
+})
 ```
 
 ## Git Config

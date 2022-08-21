@@ -4,6 +4,7 @@
         "cypress/globals": true
     },
     "extends": [
+        "@antfu",
         "plugin:cypress/recommended",
         "plugin:chai-friendly/recommended"
     ],
