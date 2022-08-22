@@ -1,6 +1,6 @@
 const { defineConfig } = require('cypress')
 
-const time = 50_000
+const time = 100_000
 
 module.exports = defineConfig({
   chromeWebSecurity: false,

@@ -13,6 +13,7 @@ function removeRecentSearches($body) {
 
 describe('one way basic booking', () => {
   before(() => {
+    cy.viewport('macbook-11')
     cy.visit('https://ns-booking-dev4.newshore.es/en-US/')
   })
 
@@ -23,15 +24,22 @@ describe('one way basic booking', () => {
     })
 
     cy.findByText('One way').click()
+
+    const origin = 'Kisumu'
+
     cy.get('#originDiv').within(() => {
       cy.get('#originBtn').click({ force: true })
-      cy.get('input').type('Kenya')
+      cy.get('input').type(origin)
     })
+
     cy.get('#departureStationsListId').within(() => {
       cy.get('.station-control-list_item').first().click()
     })
-    cy.findByPlaceholderText('Destination').click().type('Mombasa')
-    cy.findByText('Mombasa').click()
+
+    const destination = 'Nairobi'
+
+    cy.findByPlaceholderText('Destination').click().type(destination)
+    cy.findByText(destination).click()
     cy.findByText('Departure').click()
 
     const dateIn3Days = dayjs()
@@ -44,10 +52,16 @@ describe('one way basic booking', () => {
     cy.get('#searchButton').click()
 
     // selected flight
-    cy.findByText('From').click()
+    cy.get('[id^="journeyFare"]').within(() => {
+      cy.findByText('From').click()
+    })
     cy.findByText('BASIC ECONOMY').click()
 
     cy.get('input[id^="acceptTermsInput"]').click()
+
+    cy.get('.summary_trigger_price').invoke('text').then((text) => {
+      cy.wrap(text).as('selectFlightPageTotalPrice')
+    })
 
     cy.get('.summary_total_list').within(() => {
       cy.findAllByText('Continue').click()
@@ -148,6 +162,30 @@ describe('one way basic booking', () => {
     })
 
     cy.wait('@itineraryPage')
+
+    // itinerary page
+    cy.findByText('Passengers details').parent().within(() => {
+      const fullName = `${firstName} ${lastName}`
+      expect(cy.findAllByText(fullName)).to.exist
+    })
+
+    cy.findByText('Total').next().invoke('text').then((text) => {
+      cy.wrap(text).as('itineraryPageTotalPrice')
+    })
+
+    cy.get('@selectFlightPageTotalPrice').then((selectFlightPageTotalPrice) => {
+      cy.get('@itineraryPageTotalPrice').then((itineraryPageTotalPrice) => {
+        cy.log(selectFlightPageTotalPrice)
+        cy.log(itineraryPageTotalPrice)
+
+        expect(selectFlightPageTotalPrice).to.equal(itineraryPageTotalPrice)
+      })
+    })
+
+    cy.get('.summary_travel').invoke('text').then((itineraryPageJourneyName) => {
+      const journeyName = `${origin}to${destination}`
+      expect(itineraryPageJourneyName).to.equal(journeyName)
+    })
   })
 })
 
