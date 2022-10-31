@@ -13,57 +13,49 @@ function removeRecentSearches($body) {
 
 describe('one way basic booking', () => {
   before(() => {
-    cy.visit('https://ns-booking-dev2.newshore.es/en-US/')
+    cy.viewport('macbook-11')
+    cy.visit('https://ns-booking-dev.newshore.es/en-US/')
   })
 
   it('search journey eldoret to mombasa, in next to 2 days, 1 adult, basic economy', () => {
-    const originName = 'Eldoret'
-    const destinationName = 'Mómbasa'
-
+    // home page
     cy.get('body').then(($body) => {
       removeRecentSearches($body)
     })
 
     cy.findByText('One way').click()
+
+    const origin = 'Kisumu'
+
     cy.get('#originDiv').within(() => {
       cy.get('#originBtn').click({ force: true })
-      cy.get('input').type('Kenya')
+      cy.get('input').type(origin)
     })
+
     cy.get('#departureStationsListId').within(() => {
       cy.get('.station-control-list_item').first().click()
     })
-    cy.findByPlaceholderText('Destination').click().type(destinationName)
 
-    cy.intercept('POST', '/pricing/api/v1/journeys').as('journeys')
+    const destination = 'Nairobi'
 
-    cy.findByText(destinationName).click()
+    cy.findByPlaceholderText('Destination').click().type(destination)
+    cy.findByText(destination).click()
     cy.findByText('Departure').click()
 
-    // const dateIn3Days = dayjs()
-    //   .add(3, 'days')
-    //   .format('D-M-YYYY')
+    const dateIn3Days = dayjs()
+      .add(3, 'days')
+      .format('D-M-YYYY')
 
-    // cy.get(`[aria-label="${dateIn3Days}"]`).click()
+    cy.get(`[aria-label="${dateIn3Days}"]`).click()
 
-    cy.wait('@journeys')
-
-    cy.wait(500)
-
-    cy
-      .get('.custom-day')
-      .not('.nojourneys')
-      .first()
-      .parent()
-      .click()
-
-    // cy.findByText('Search').click()
+    cy.findByText('Confirm').click()
     cy.get('#searchButton').click()
 
     // selected flight
     cy.get('[id^="journeyFare"]').within(() => {
       cy.findByText('From').click()
     })
-    cy.findByText('Basic').click()
+    cy.findByText('BASIC ECONOMY').click()
 
     cy.get('input[id^="acceptTermsInput"]').click()
 
@@ -83,16 +75,16 @@ describe('one way basic booking', () => {
 
     cy.get('input[id^="IdLastName"]').click().type(lastName)
 
-    cy.get('[id^="dateDay_IdDateBirth"]').click()
-    cy.get('[id^="listId_dateDay_IdDateBirth"] li').first().click()
+    cy.get('[id^=dateDay_IdDateBirth]').click()
+    cy.get('[aria-labelledby^="labelId_dateDay_IdDateBirth"] li').first().click()
 
-    cy.get('[id^="dateMonth_IdDateBirth"]').click()
-    cy.get('[id^="listId_dateMonth_IdDateBirth"] li').first().click()
+    cy.get('[id^=dateMonth_IdDateBirth]').click()
+    cy.get('[aria-labelledby^="labelId_dateMonth_IdDateBirth"] li').first().click()
 
-    cy.get('[id^="dateYear_IdDateBirth"]').click()
-    cy.get('[id^="listId_dateYear_IdDateBirth"] li').eq(20).click()
+    cy.get('[id^=dateYear_IdDateBirth]').click()
+    cy.get('[aria-labelledby^="labelId_dateYear_IdDateBirth"] li').eq(20).click()
 
-    cy.get('button[id^="IdDocNationality"]').click()
+    cy.get('button[id^=IdDocNationality]').click()
     cy.get('ul[aria-labelledby^="labelId_IdDocNationality"] li').first().click()
 
     cy.get('button[id^=IdDocType]').click()
@@ -112,36 +104,23 @@ describe('one way basic booking', () => {
     cy.get('button[id^="dateYear_IdDocExpDate"]').click()
     cy.get('ul[aria-labelledby^="labelId_dateYear_IdDocExpDate"] li').eq(4).click()
 
-    cy.get('[id^="dateDay_IdDocIssuedDate"]').click()
-    cy.get('[id^="listId_dateDay_IdDocIssuedDate"] li').first().click()
-
-    cy.get('[id^="dateMonth_IdDocIssuedDate"]').click()
-    cy.get('[id^="listId_dateMonth_IdDocIssuedDat"] li').first().click()
-
-    cy.get('[id^="dateYear_IdDocIssuedDate"]').click()
-    cy.get('[id^="listId_dateYear_IdDocIssuedDate"] li').eq(20).click()
-
-    cy.get('button[id^="phone_prefixPhoneId"]').click()
-    cy.get('ul#listId_phone_prefixPhoneId li').first().click()
+    cy.get('button[id^="phone_prefixPhoneInput"]').click()
+    cy.get('ul[aria-labelledby^="labelId_phone_prefixPhoneInput"] li').first().click()
 
     cy.get('button[id^="countrySelect"]').click()
     cy.get('ul[aria-labelledby^="labelId_countrySelect"] li').first().click()
 
     cy.get('input[id^="IdDocNum"]').click().type(idDocument)
 
-    cy.get('.account-passenger_item').click()
+    cy.get('input[id^="checkbox-2"]').click()
 
-    cy.get('input[id^="phone_phoneNumberId"]').click().type('3819201220')
+    cy.get('input[id^="phone_phoneNumberInput"]').click().type('3819201220')
 
     cy.get('input[id^="email"]').click().type('e@e.com')
     cy.get('input[id^="streetAddress"]').click().type('Street 1')
     cy.get('input[id^="city"]').click().type('Nairobi')
 
     cy.intercept('GET', '**/booking/services').as('servicesPage')
-
-    cy.get('.summary_trigger_price').invoke('text').then((text) => {
-      cy.wrap(text).as('passengersPageTotalPrice')
-    })
 
     cy.get('.summary_total_list').within(() => {
       cy.findAllByText('Continue').click()
@@ -194,17 +173,17 @@ describe('one way basic booking', () => {
       cy.wrap(text).as('itineraryPageTotalPrice')
     })
 
-    cy.get('@passengersPageTotalPrice').then((passengersPageTotalPrice) => {
+    cy.get('@selectFlightPageTotalPrice').then((selectFlightPageTotalPrice) => {
       cy.get('@itineraryPageTotalPrice').then((itineraryPageTotalPrice) => {
-        cy.log(passengersPageTotalPrice)
+        cy.log(selectFlightPageTotalPrice)
         cy.log(itineraryPageTotalPrice)
 
-        expect(passengersPageTotalPrice).to.equal(itineraryPageTotalPrice)
+        expect(selectFlightPageTotalPrice).to.equal(itineraryPageTotalPrice)
       })
     })
 
     cy.get('.summary_travel').invoke('text').then((itineraryPageJourneyName) => {
-      const journeyName = `${originName}to${destinationName}`
+      const journeyName = `${origin}to${destination}`
       expect(itineraryPageJourneyName).to.equal(journeyName)
     })
   })
